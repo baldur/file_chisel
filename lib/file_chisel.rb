@@ -4,12 +4,11 @@ $:.unshift(File.dirname(__FILE__)) unless
 require 'active_support'
 
 module FileChisel
-  VERSION = '0.0.1'
+  VERSION = '0.0.2'
+  DEFAULT_PART_DIR = "#{ENV['HOME']}/shuebox/parts/" 
 end
 
 Dir["#{File.dirname(__FILE__)}/file_chisel/*\.rb"].each do |file|
-  #inferred_classname = File.basename(file).gsub(/\.rb$/, '').camelcase
   require File.expand_path(file)
-  #autoload "FileChisel::#{inferred_classname}", File.expand_path(file)
 end  
 

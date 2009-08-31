@@ -4,6 +4,8 @@ PostInstall.txt
 README.rdoc
 Rakefile
 lib/file_chisel.rb
+lib/file_chisel/splitter.rb
+lib/file_chisel/joiner.rb
 script/console
 script/destroy
 script/generate
