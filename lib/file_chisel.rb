@@ -4,7 +4,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 require 'active_support'
 
 module FileChisel
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
   DEFAULT_PART_DIR = "#{ENV['HOME']}/shuebox/parts/" 
 
   def self.hash_directory_for(value)
