@@ -38,8 +38,7 @@ module FileChisel
     end
 
     def part_directory=(path)
-      # slapping / on path if it is not provided
-      @part_directory = (path =~ /.*\/$/ ? path : "#{path}/")
+      @part_directory = FileChisel.valid_directory_path_for(path)
     end
 
     private
@@ -53,7 +52,7 @@ module FileChisel
       end
 
       def hashed_directory_for_part
-        @part_filename.unpack('aaaaa').push('').join('/')
+        FileChisel.hash_directory_for(@part_filename)
       end
 
       def info_for_file

@@ -5,27 +5,55 @@ require 'yaml'
 
 module FileChisel
   class Joiner
-    def self.join(dirpath)
-      @joiner = new(dirpath)
+
+    attr_reader :part_directory
+
+    def self.join(filename, info)
+      @joiner = new(filename, info)
       @joiner.join
     end
 
-    def initialize(dirpath)
-      @dirpath = dirpath
-      @outputfile = "#{@dirpath}.reassembled.mp4"
-      @info = YAML.load_file("#{@dirpath}.manifest.yml")
+    def initialize(assembled_filename, info)
+      @part_directory = FileChisel::DEFAULT_PART_DIR
+      @outputfile = assembled_filename 
+      @info = info
     end
 
     def join
-      @output = File.new(@outputfile, "w")
-      (@info[:count]).times do |i|
-        hashed_dir = "#{@info[:parts_map][i].unpack('aaaaa').push('').join('/')}" 
-        f = File.new("#{FileChisel::PARTS_DIR}#{hashed_dir}/#{@info[:parts_map][i]}", "r")
-        @output.print(f.read)
-        f.close
-      end
-      @output.close
+      write_assembled_file {
+        @info.sort.each do |pair|
+            @part_filename = pair[1]
+            @output.print(read_part_file)
+        end
+      }
     end
+
+    def part_directory=(path)
+      @part_directory = FileChisel.valid_directory_path_for(path)
+    end
+
+    private
+
+      def write_assembled_file
+        @output = File.new(@outputfile, "w")
+        yield
+        @output.close
+      end
+
+      def read_part_file
+        f = File.new(path_to_part_file, "r")
+        content = f.read
+        f.close
+        return content
+      end
+
+      def path_to_part_file
+        "#{@part_directory}#{hashed_directory_for_part}/#{@part_filename}"
+      end
+
+      def hashed_directory_for_part
+        FileChisel.hash_directory_for(@part_filename)
+      end
   end
 end
 
